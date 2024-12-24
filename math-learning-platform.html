@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לומדת הכנה למבחן מיון במתמטיקה</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                packages: ['base', 'ams', 'noerrors', 'noundefined']
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            startup: {
+                ready: () => {
+                    initializeApp();
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+        </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .module {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .explanation-item,
+        .example-item {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .question {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .options label:hover {
+            background-color: #f0f0f0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    /* Initially hide the background */
+    background-color: transparent;
+}
+
+        .correct {
+            color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .incorrect {
+            color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        .navigation-buttons {
+            margin: 15px 0;
+        }
+
+        .navigation-buttons button {
+            margin: 0 5px;
+        }
+
+        .section-content {
+            display: none;
+            background-color: #fff;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        button.active {
+            background-color: #b30086;
+            color: white;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 18px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .drawing-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .rectangle-grid {
+            display: grid;
+            gap: 2px;
+            width: 300px;
+            margin: 0 auto;
+            background: #eee;
+            padding: 2px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            background: white;
+        }
+
+        .grid-cell.highlighted {
+            background: #ff6b6b;
+        }
+
+        .circle-container {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            margin: 10px;
+        }
+
+        .circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            border: 2px solid #333;
+            background: white;
+            overflow: hidden;
+        }
+
+        .circle-segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            transform-origin: center;
+            clip-path: polygon(50% 50%, 50% 0%);
+        }
+
+        .circle-segment::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 1px;
+            height: 50%;
+            background: #333;
+            transform-origin: bottom;
+        }
+
+        .circle-segment.highlighted {
+            background: #4a90e2;
+        }
+
+        .drawing-caption {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>לומדת הכנה למבחן מיון במתמטיקה</h1>
+    <div class="topic-selector">
+        <h2>בחר נושא:</h2>
+        <select id="topicSelector" onchange="loadSelectedTopic()">
+            <option value="">בחר נושא...</option>
+        </select>
+    </div>
+    <div class="module" id="currentModule" style="display: none">
+        <h2><span id="moduleTitle"></span></h2>
+
+        <div class="navigation-buttons">
+            <button id="explanationBtn" onclick="showSection('explanation')">הסברים</button>
+            <button id="examplesBtn" onclick="showSection('examples')">דוגמאות</button>
+            <button id="quizBtn" onclick="showSection('quiz')">תרגול</button>
+        </div>
+
+        <div id="explanationSection" class="section-content">
+            <h3>הסברים</h3>
+            <div id="explanationContent"></div>
+        </div>
+
+        <div id="examplesSection" class="section-content">
+            <h3>דוגמאות</h3>
+            <div id="exampleContent"></div>
+        </div>
+
+        <div id="quizSection" class="section-content">
+            <h3>תרגול</h3>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <div class="score-display">
+                תשובות נכונות: <span id="correctAnswers">0</span> מתוך <span id="totalAnswers">0</span>
+            </div>
+            <div class="question">
+                <p><span id="questionText"></span></p>
+                <div class="options" id="optionsContainer"></div>
+                <button onclick="checkAnswer()">בדוק תשובה</button>
+                <p class="feedback" id="feedback"></p>
+            </div>
+            <div class="navigation-buttons">
+                <button id="prevQuestionBtn" onclick="loadPreviousQuestion()" disabled>שאלה קודמת</button>
+                <button id="nextQuestionBtn" onclick="loadNextQuestion()" disabled>שאלה הבאה</button>
+            </div>
+        </div>
+    </div>
+    <script>const learningContent = {};</script>
+
+    <script src="topics/fractions.js"></script>
+    <script src="topics/word-problems.js"></script>
+    <script>
+        const moduleContainer = document.getElementById("currentModule");
+        const moduleTitleElement = document.getElementById("moduleTitle");
+        const explanationContentElement = document.getElementById("explanationContent");
+        const exampleContentElement = document.getElementById("exampleContent");
+        const questionTextElement = document.getElementById("questionText");
+        const optionsContainer = document.getElementById("optionsContainer");
+        const feedbackElement = document.getElementById("feedback");
+        const prevQuestionBtn = document.getElementById("prevQuestionBtn");
+        const nextQuestionBtn = document.getElementById("nextQuestionBtn");
+        const progressBar = document.getElementById("progressBar");
+        const correctAnswersElement = document.getElementById("correctAnswers");
+        const totalAnswersElement = document.getElementById("totalAnswers");
+
+        let currentModuleIndex = 0;
+        let currentQuestionIndex = 0;
+        let currentModuleKey;
+        let currentModuleData;
+        let currentQuizQuestions;
+        let correctAnswers = 0;
+        let answeredQuestions = 0;
+        let currentQuestionAnswered = false;
+        let availableTopics = [];
+        let currentTopic = null;
+
+        async function initializeApp() {
+            await loadAvailableTopics();
+            MathJax.startup.defaultReady();
+        }
+
+        async function loadAvailableTopics() {
+            try {
+                // Instead of fetching from PHP, we'll directly use the learningContent object
+                const selector = document.getElementById('topicSelector');
+
+                // Clear existing options
+                selector.innerHTML = '<option value="">בחר נושא...</option>';
+
+                // Add each topic from learningContent
+                Object.keys(learningContent).forEach(topicName => {
+                    const option = document.createElement('option');
+                    option.value = topicName;
+                    option.textContent = topicName;
+                    selector.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load topics:', error);
+            }
+        }
+
+        async function loadSelectedTopic() {
+            const selector = document.getElementById('topicSelector');
+            const selectedTopic = selector.value;
+
+            if (!selectedTopic) {
+                document.getElementById('currentModule').style.display = 'none';
+                return;
+            }
+
+            try {
+                currentModuleData = learningContent[selectedTopic];
+                currentQuizQuestions = currentModuleData.quiz;
+
+                // Reset state
+                correctAnswers = 0;
+                answeredQuestions = 0;
+                currentQuestionIndex = 0;
+
+                // Show module and load content
+                document.getElementById('currentModule').style.display = 'block';
+                moduleTitleElement.textContent = selectedTopic;
+                showSection('explanation');
+            } catch (error) {
+                console.error('Failed to load topic:', error);
+            }
+        }
+
+        function loadExplanation() {
+            const explanationHTML = currentModuleData.explanation
+                .map(item => `<p class="explanation-item">${item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>`)
+                .join('');
+            explanationContentElement.innerHTML = explanationHTML;
+
+            // Simplified MathJax typesetting
+            MathJax.typesetPromise()
+                .then(() => {
+                    console.log("MathJax typesetting complete");
+                })
+                .catch((err) => {
+                    console.error("MathJax typesetting failed:", err);
+                });
+        }
+
+        function loadExamples() {
+            console.log('Current module data:', currentModuleData);
+            const examplesHTML = currentModuleData.examples
+                .map(example => `
+            <div class="example-item">
+                <p><strong>שאלה:</strong> ${example.question}</p>
+                <p><strong>פתרון:</strong> ${example.solution}</p>
+                ${example.drawing ? `
+                    <div class="drawing-container">
+                        ${renderDrawing(example.drawing)}
+                    </div>
+                ` : ''}
+            </div>
+        `)
+                .join('');
+            exampleContentElement.innerHTML = examplesHTML;
+            MathJax.typesetPromise();
+        }
+
+        function loadQuiz() {
+            currentQuestionIndex = 0;
+            currentQuestionAnswered = false;
+            loadQuestion();
+            updateProgress();
+            // Add this line to show total questions
+            totalAnswersElement.textContent = currentQuizQuestions.length;
+        }
+
+        function loadQuestion() {
+            if (!currentQuizQuestions || currentQuizQuestions.length === 0) {
+                questionTextElement.textContent = "אין שאלות תרגול לנושא זה.";
+                optionsContainer.innerHTML = "";
+                prevQuestionBtn.disabled = true;
+                nextQuestionBtn.disabled = true;
+                return;
+            }
+
+            const currentQuestion = currentQuizQuestions[currentQuestionIndex];
+            questionTextElement.innerHTML = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
+            optionsContainer.innerHTML = currentQuestion.options
+                .map((option, index) => `
+                    <label>
+                        <input type="radio" name="answer" value="${String.fromCharCode(97 + index)}">
+                        ${String.fromCharCode(1488 + index)}. ${option}
+                    </label>
+                `)
+                .join('');
+
+            feedbackElement.textContent = "";
+                feedbackElement.className = "feedback";  // Reset to base class only
+            MathJax.typesetPromise();
+            currentQuestionAnswered = false;
+            updateNavigationButtons();
+        }
+
+        function checkAnswer() {
+            const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+            if (!selectedAnswer) {
+                feedbackElement.textContent = "יש לבחור תשובה.";
+                feedbackElement.className = "feedback";
+                return;
+            }
+
+            const currentQuestion = currentQuizQuestions[currentQuestionIndex];
+            const isCorrect = selectedAnswer.value === currentQuestion.correctAnswer;
+
+            if (isCorrect) {
+                correctAnswers++;
+            }
+            answeredQuestions++;
+            currentQuestionAnswered = true;
+
+            feedbackElement.textContent = isCorrect
+                ? "כל הכבוד! תשובה נכונה!"
+                : `לא נכון. התשובה הנכונה היא ${String.fromCharCode(1488 + currentQuestion.correctAnswer.charCodeAt(0) - 97)}.`;
+            feedbackElement.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+
+            updateScore();
+            updateNavigationButtons();
+            updateProgress();
+        }
+
+        function updateScore() {
+            correctAnswersElement.textContent = correctAnswers;
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / currentQuizQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function loadPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function loadNextQuestion() {
+            if (currentQuestionIndex < currentQuizQuestions.length - 1 && currentQuestionAnswered) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        function updateNavigationButtons() {
+            prevQuestionBtn.disabled = currentQuestionIndex === 0;
+            nextQuestionBtn.disabled = !currentQuestionAnswered || currentQuestionIndex === currentQuizQuestions.length - 1;
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-content').forEach(content =>
+                content.classList.remove('active'));
+            document.getElementById(sectionId + 'Section').classList.add('active');
+
+            document.querySelectorAll('.navigation-buttons button').forEach(button =>
+                button.classList.remove('active'));
+            document.getElementById(sectionId + 'Btn').classList.add('active');
+
+            if (sectionId === 'explanation') loadExplanation();
+            else if (sectionId === 'examples') loadExamples();
+            else if (sectionId === 'quiz') loadQuiz();
+        }
+        function renderDrawing(drawing) {
+            switch (drawing.type) {
+                case 'rectangleGrid':
+                    return renderRectangleGrid(drawing);
+                case 'circle':
+                    return renderCircle(drawing);
+                case 'rectangleStrip':
+                    return renderRectangleStrip(drawing);
+                case 'fractionCircles':
+                    return renderFractionCircles(drawing);
+                default:
+                    return '';
+            }
+        }
+
+        function renderRectangleGrid({ rows, cols, highlightCells, caption }) {
+            const grid = document.createElement('div');
+            grid.className = 'rectangle-grid';
+            grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+            for (let i = 0; i < rows * cols; i++) {
+                const cell = document.createElement('div');
+                cell.className = `grid-cell ${i < highlightCells ? 'highlighted' : ''}`;
+                grid.appendChild(cell);
+            }
+
+            return `
+        <div class="drawing-container">
+            ${grid.outerHTML}
+            ${caption ? `<div class="drawing-caption">${caption}</div>` : ''}
+        </div>
+    `;
+        }
+        function renderCircle({ divisions, highlightSections, caption }) {
+            let segments = '';
+            const angle = 360 / divisions;
+
+            for (let i = 0; i < divisions; i++) {
+                const isHighlighted = highlightSections.includes(i + 1);
+                segments += `
+            <div class="circle-segment ${isHighlighted ? 'highlighted' : ''}" 
+                 style="clip-path: polygon(50% 50%, 50% 0%, ${getArcPoints(angle)}); 
+                        transform: rotate(${i * angle}deg);">
+            </div>`;
+            }
+
+            return `<div class="circle-container"><div class="circle">${segments}</div></div>`;
+        }
+
+        function getArcPoints(angle) {
+            let points = '50% 0%';
+            for (let i = 1; i <= angle; i++) {
+                const rad = i * Math.PI / 180;
+                const x = 50 + 50 * Math.sin(rad);
+                const y = 50 - 50 * Math.cos(rad);
+                points += `, ${x}% ${y}%`;
+            }
+            return points + ', 50% 50%';
+        }
+
+
+
+        function renderRectangleStrip({ divisions, highlights, caption }) {
+            const strip = document.createElement('div');
+            strip.className = 'rectangle-grid';
+            strip.style.gridTemplateColumns = `repeat(${divisions}, 1fr)`;
+
+            for (let i = 0; i < divisions; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                if (highlights.first.includes(i + 1) ||
+                    highlights.second.includes(i + 1) ||
+                    highlights.result.includes(i + 1)) {
+                    cell.classList.add('highlighted');
+                }
+                strip.appendChild(cell);
+            }
+
+            return `
+        <div class="drawing-container">
+            ${strip.outerHTML}
+            ${caption ? `<div class="drawing-caption">${caption}</div>` : ''}
+        </div>
+    `;
+        }
+
+        function renderFractionCircles({ fractions, caption }) {
+            const circles = fractions.map(fraction => {
+                const [num, den] = fraction.split('/').map(Number);
+                return renderCircle({
+                    divisions: den,
+                    highlightSections: Array.from({ length: num }, (_, i) => i + 1),
+                    caption: null
+                });
+            }).join('');
+
+            return `
+        <div class="drawing-container" style="display: flex; justify-content: center; gap: 40px;">
+            ${circles}
+            ${caption ? `<div class="drawing-caption">${caption}</div>` : ''}
+        </div>
+    `;
+        }
+    </script>
+</body>
+
+</html>
