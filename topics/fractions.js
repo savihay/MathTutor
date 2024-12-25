@@ -1,4 +1,4 @@
-learningContent["שברים ומספרים עשרוניים"] = {
+learningContent["שברים"] = {
 
     explanation: [
         "**מהו שבר?**",
@@ -117,6 +117,16 @@ learningContent["שברים ומספרים עשרוניים"] = {
             question: "בכיתה יש 30 תלמידים. $\\frac{2}{5}$ מהם בנים. כמה בנות יש בכיתה?",
             options: ["12", "18", "15", "20"],
             correctAnswer: "b"
+        },
+        {
+            question: "מה התוצאה של $\\frac{5}{6} - \\frac{1}{3}$?",
+            options: ["$\\frac{1}{2}$", "$\\frac{1}{3}$", "$\\frac{2}{3}$", "$\\frac{1}{6}$"],
+            correctAnswer: "a"
+        },
+        {
+            question: "אם $\\frac{3}{4}$ של מספר הוא 18, מהו המספר?",
+            options: ["24", "22", "26", "28"],
+            correctAnswer: "a"
         }
     ]
 };
